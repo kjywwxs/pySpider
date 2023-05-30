@@ -5,13 +5,13 @@ import logging.handlers
 import os
 from time import strftime
 
-LOG_FILENAME = strftime("logs\jd-buyer_%Y_%m_%d_%H.log")
+LOG_FILENAME = strftime("logs\spider_%Y_%m_%d_%H.log")
 
 logger = logging.getLogger()
 
 
 def set_logger():
-    path = os.path.dirname(os.getcwd()+ '\\logs\\') # 判断日志目录
+    path = os.path.dirname(os.getcwd() + '\\logs\\')  # 判断日志目录
     if not os.path.exists(path):
         os.makedirs(path)
     logger.setLevel(logging.INFO)
