@@ -2,9 +2,18 @@ import os
 import requests
 import re
 import json
+from log import logger
 
+'''
+一个konachan网站的爬虫，获取图片以及图片信息,如tag,作者等信息
+'''
+# 图片存放文件夹
+dist_dir = ""
+# 图片详细信息存放文件夹(json文件，包含tag，作者等)
+dist_detail_info_dir = ""
 
 if __name__ == '__main__':
+
     header = {
         'user-agent': 'Mozilla / 5.0(Windows NT 10.0;Win64;) AppleWebKit / 537.36(KHTML, likeGecko) Chrome / '
                       '113.0.0.0Safari / 537.36Edg / 113.0.1774.50 '
@@ -18,8 +27,6 @@ if __name__ == '__main__':
         }
 
         resp = requests.get('https://konachan.com/post', params=param, headers=header, proxies=proxy)
-        # print(resp.text)
-        # 提取图片信息json（详细信息）
         json_img_list = re.findall(r"Post.register[(](.*)[)]", resp.text)
 
         dict_img_list = [json.loads(json_img) for json_img in json_img_list]  # 包含图片（详细信息）
