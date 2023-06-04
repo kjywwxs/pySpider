@@ -8,10 +8,12 @@ from queue import Queue
 from threading import Thread
 
 '''
-一个konachan网站的爬虫，获取图片以及图片信息,如tag,作者等信息
+一个lolibooru网站的爬虫，获取图片以及图片信息,如tag,作者等信息(此网站和konachan完全一致)
 author: kjywwxs
 update:2023-5-31
+
 '''
+
 
 class KonachanImgSpider:
     # # 图片存放文件夹
@@ -26,26 +28,9 @@ class KonachanImgSpider:
         }
         # 本机开代理，端口号默认为10809
         self.proxy = {'https': '127.0.0.1:10809'}
-        self.base_url = 'https://konachan.com/post'
+        self.base_url = 'https://www.lolibooru.moe/post'
         self.img_info_list = Queue(maxsize=50)
 
-    # def get_img_info_list(self, pages_start=1, pages_end=10):
-    #     '''
-    #     根据页数获得图片的info，每张图的info是一个字典，包含url,tag等信息
-    #     :param pages_start: 开始页码，默认1
-    #     :param pages_end: 结束页码，默认10
-    #     '''
-    #     img_info_list = []
-    #     for page in range(pages_start, pages_end + 1):
-    #         try:
-    #             _resp = requests.get(self.base_url, params={"page": page}, headers=self.header, proxies=self.proxy)
-    #             _json_img_list = re.findall(r"Post.register[(](.*)[)]", _resp.text)
-    #             _dict_img_list = [json.loads(json_img) for json_img in _json_img_list]  # info列表，包含url,tag等信息
-    #             logger.info('获取第{}页图片info成功，共{}张'.format(page, len(_dict_img_list)))
-    #             img_info_list.extend(_dict_img_list)
-    #         except:
-    #             logger.info('获取第{}页图片info失败'.format(page))
-    #     self.img_info_list = img_info_list
 
     def get_img_info_list(self, pages_start=1, pages_end=10):
         '''
@@ -64,18 +49,6 @@ class KonachanImgSpider:
                 logger.info('获取第{}页图片info失败'.format(page))
         self.img_info_list.put(None)  # 队列结束标志位
 
-    # def download_img_list(self):
-    #     img_info_list = self.img_info_list
-    #     logger.info('共{}张图片'.format(len(img_info_list)))
-    #     for i, detail_info in enumerate(img_info_list):
-    #         img_id = detail_info.get('id')
-    #         img_url = detail_info.get('file_url')
-    #         logger.info('开始下载第{}张,图片id：{},图片url：{}'.format(i + 1, img_id, img_url))
-    #         self._download_img(img_url,
-    #                            "F:\\konachanPictures\\{}".format(str(img_id) + self.get_img_type_from_url(img_url)))
-    #         # 保存文件info为json
-    #         self._save_img_info("F:\\konachanPictures\\detailInfo\\{}.json".format(img_id), json.dumps(detail_info))
-    #         logger.info('第{}张下载保存成功,图片id:{}'.format(i + 1, img_id))
 
     def download_img_list(self):
         i = 0
@@ -88,9 +61,9 @@ class KonachanImgSpider:
             img_url = detail_info.get('file_url')
             logger.info('开始下载第{}张,图片id：{},图片url：{}'.format(i + 1, img_id, img_url))
             self._download_img(img_url,
-                               "F:\\konachanPictures\\{}".format(str(img_id) + self.get_img_type_from_url(img_url)))
+                               "F:\\lolibooruPictures\\{}".format(str(img_id) + self.get_img_type_from_url(img_url)))
             # 保存文件info为json
-            self._save_img_info("F:\\konachanPictures\\detailInfo\\{}.json".format(img_id), json.dumps(detail_info))
+            self._save_img_info("F:\\lolibooruPictures\\detailInfo\\{}.json".format(img_id), json.dumps(detail_info))
             logger.info('第{}张下载保存成功,图片id:{}'.format(i + 1, img_id))
             i += 1
 
@@ -139,12 +112,10 @@ def main(start=1, end=20):
     konachan_img_spider = KonachanImgSpider()
     task1 = Thread(target=konachan_img_spider.get_img_info_list, kwargs=({'pages_start': start, 'pages_end': end}))
     task2 = Thread(target=konachan_img_spider.download_img_list)
-    # konachan_img_spider.get_img_info_list(pages_start=start, pages_end=end)
-    # konachan_img_spider.download_img_list()
     task1.start()
     task2.start()
     task2.join()
 
 
 if __name__ == '__main__':
-    main(start=1, end=100)
+    main(start=1, end=10)

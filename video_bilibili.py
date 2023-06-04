@@ -1,5 +1,10 @@
 import requests
 import re
+'''
+一个b站的爬虫,获取视频资源，以及视频其他信息，播放量，标签等
+author: kjywwxs
+updata:
+'''
 
 
 def get_proxy():
